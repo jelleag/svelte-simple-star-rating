@@ -1,5 +1,5 @@
 <script>
-	import Star from './svgs/Star.svelte';
+	import Star from './Star.svelte';
 
 	export let rating = 0;
 	export let fillColor = 'gold';
