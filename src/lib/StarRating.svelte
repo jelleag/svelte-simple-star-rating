@@ -1,25 +1,27 @@
-<script lang="ts">
-	import Star from './Star.svelte';
+<script>
+	import Star from './svgs/Star.svelte';
 
-	export let rating: number = 0;
-	export let fillColor: string = 'gold';
-	export let emptyColor: string = 'grey';
-    export let size: number = 24;
+	export let rating = 0;
+	export let fillColor = 'gold';
+	export let emptyColor = 'grey';
+    export let size = 24;
+    export let readOnly = false;
 
-	export let ratingChanged: (rating: number) => void;
+	export let ratingChanged;
 
-	let currentHover: number = 0;
+	let currentHover = 0;
+	let cursor = readOnly ? 'default' : 'pointer';
 
-	$: ratingChanged(rating);
+	$: rating != 0 && !readOnly && ratingChanged(rating);
 </script>
 
-<div class="holder">
-	{#each [1, 2, 3, 4, 5] as star}
+<div class={readOnly ? "holder-passive" : "holder"}>
+	{#each [1, 2, 3, 4, 5] as star} 
 		<!-- svelte-ignore a11y-click-events-have-key-events -->
 		<div
-			on:click={() => (rating = star)}
-			on:mouseenter={() => (currentHover = star)}
-			on:mouseleave={() => (currentHover = 0)}
+			on:click={() => (rating = readOnly ? rating : star)}
+			on:mouseenter={() => (currentHover = readOnly ? currentHover : star)}
+			on:mouseleave={() => (currentHover = readOnly ? currentHover : 0)}
 		>
 			<Star size={size} color={star <= currentHover ? fillColor : star <= rating ? fillColor : emptyColor} />
 		</div>
@@ -28,11 +30,19 @@
 
 <style>
 	.holder {
-		cursor: pointer;
 		display: flex;
 		flex-direction: row;
-		width: 100%;
+		width: auto;
 		justify-content: center;
 		align-items: center;
+		cursor: pointer;
+	}
+	.holder-passive {
+		display: flex;
+		flex-direction: row;
+		width: auto;
+		justify-content: center;
+		align-items: center;
+		cursor: default;
 	}
 </style>
